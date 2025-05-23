@@ -13,7 +13,7 @@ final textControllersProvider = StateProvider<Map<int, TextEditingController>>(
 );
 
 // Holds the calculated amount text
-final calculatedAmountProvider = StateProvider<String>((ref) => "\$0.00");
+final calculatedAmountProvider = StateProvider<String>((ref) => "0.00");
 
 final isLoadingProvider = StateProvider<bool>((ref) => false);
 
