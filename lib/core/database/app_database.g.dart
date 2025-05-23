@@ -74,6 +74,8 @@ class _$AppDatabase extends AppDatabase {
 
   CurrencyDao? _currencyDaoInstance;
 
+  CurrencyRateDao? _currencyRateDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -97,6 +99,8 @@ class _$AppDatabase extends AppDatabase {
       onCreate: (database, version) async {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `currencies` (`code` TEXT NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY (`code`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `currency_rates` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `base` TEXT NOT NULL, `target` TEXT NOT NULL, `rate` REAL NOT NULL, `date` TEXT NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -107,6 +111,12 @@ class _$AppDatabase extends AppDatabase {
   @override
   CurrencyDao get currencyDao {
     return _currencyDaoInstance ??= _$CurrencyDao(database, changeListener);
+  }
+
+  @override
+  CurrencyRateDao get currencyRateDao {
+    return _currencyRateDaoInstance ??=
+        _$CurrencyRateDao(database, changeListener);
   }
 }
 
@@ -140,5 +150,57 @@ class _$CurrencyDao extends CurrencyDao {
   Future<void> insertCurrencies(List<CurrencyEntity> currencies) async {
     await _currencyEntityInsertionAdapter.insertList(
         currencies, OnConflictStrategy.replace);
+  }
+}
+
+class _$CurrencyRateDao extends CurrencyRateDao {
+  _$CurrencyRateDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _currencyRateEntityInsertionAdapter = InsertionAdapter(
+            database,
+            'currency_rates',
+            (CurrencyRateEntity item) => <String, Object?>{
+                  'id': item.id,
+                  'base': item.base,
+                  'target': item.target,
+                  'rate': item.rate,
+                  'date': item.date
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<CurrencyRateEntity>
+      _currencyRateEntityInsertionAdapter;
+
+  @override
+  Future<List<CurrencyRateEntity>> getRatesByBase(String base) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM currency_rates WHERE base = ?1',
+        mapper: (Map<String, Object?> row) => CurrencyRateEntity(
+            id: row['id'] as int?,
+            base: row['base'] as String,
+            target: row['target'] as String,
+            rate: row['rate'] as double,
+            date: row['date'] as String),
+        arguments: [base]);
+  }
+
+  @override
+  Future<void> deleteRatesByBase(String base) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM currency_rates WHERE base = ?1',
+        arguments: [base]);
+  }
+
+  @override
+  Future<void> insertRates(List<CurrencyRateEntity> rates) async {
+    await _currencyRateEntityInsertionAdapter.insertList(
+        rates, OnConflictStrategy.replace);
   }
 }

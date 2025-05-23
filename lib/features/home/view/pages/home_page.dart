@@ -105,7 +105,7 @@ class _HomePageState extends ConsumerState<HomePage>
     ref.read(textControllersProvider.notifier).state = updatedControllers;
 
     if (ref.read(cardKeysProvider).isEmpty) {
-      ref.read(calculatedAmountProvider.notifier).state = "\$0.00";
+      ref.read(calculatedAmountProvider.notifier).state = "0.00";
     }
   }
 
@@ -329,6 +329,7 @@ class _HomePageState extends ConsumerState<HomePage>
                         CalculateButtonAndLabel(
                           onCalculate: onCalculateExchangeRate,
                           calculatedAmountText: calculatedAmount,
+                          baseCurrency: baseCurrency ?? '',
                         ),
                       ],
                     );
