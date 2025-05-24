@@ -7,6 +7,7 @@ import 'package:advance_currency_convertor/features/feature_setting/view/widget/
 import 'package:advance_currency_convertor/features/feature_setting/view/widget/header_text.dart';
 import 'package:advance_currency_convertor/features/feature_setting/view/widget/select_currency_modal.dart';
 import 'package:advance_currency_convertor/core/widgets/currency_selection_modal.dart';
+import 'package:advance_currency_convertor/features/home/providers/home_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,6 +38,18 @@ class _CurrencySettingsState extends ConsumerState<CurrencySettings> {
 
   Future<void> saveBaseCurrency(String value) async {
     await AppPreferences.setString(TextConstants.baseCurrency, value);
+    resetAllCards(ref);
+  }
+
+  void resetAllCards(WidgetRef ref) {
+    final textControllers = ref.read(textControllersProvider);
+    for (final controller in textControllers.values) {
+      controller.dispose();
+    }
+    ref.read(cardKeysProvider.notifier).state = [];
+    ref.read(selectedValuesProvider.notifier).state = {};
+    ref.read(textControllersProvider.notifier).state = {};
+    ref.read(calculatedAmountProvider.notifier).state = "0.00";
   }
 
   void showCurrencySelectionDialog(

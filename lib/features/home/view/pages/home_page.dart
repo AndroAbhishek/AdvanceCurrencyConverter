@@ -1,15 +1,18 @@
 import 'package:advance_currency_convertor/core/constants/text_constants.dart';
+import 'package:advance_currency_convertor/core/database/app_database.dart';
 import 'package:advance_currency_convertor/core/prefs/app_preferences.dart';
 import 'package:advance_currency_convertor/core/theme/color_pallete.dart';
 import 'package:advance_currency_convertor/core/utils.dart';
 import 'package:advance_currency_convertor/core/widgets/custom_text.dart';
 import 'package:advance_currency_convertor/core/widgets/loader.dart';
 import 'package:advance_currency_convertor/features/currency_list/viewmodel/currency_listing_viewmodel.dart';
+import 'package:advance_currency_convertor/features/home/model/currency_rate_model.dart';
 import 'package:advance_currency_convertor/features/home/view/widgets/build_add_currency_button.dart';
 import 'package:advance_currency_convertor/features/home/view/widgets/calculate_button_and_label.dart';
 import 'package:advance_currency_convertor/features/home/view/widgets/currency_card.dart';
 import 'package:advance_currency_convertor/features/home/viewmodel/currency_exchange_rate_viewmodel.dart';
-import 'package:advance_currency_convertor/features/home/viewmodel/home_state_provider.dart';
+import 'package:advance_currency_convertor/features/home/providers/home_state_provider.dart';
+import 'package:advance_currency_convertor/service_locator_dependecies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -201,13 +204,43 @@ class _HomePageState extends ConsumerState<HomePage>
     loadingNotifier.state = true;
 
     try {
-      // Fetch exchange rates
-      final result = await ref.read(
-        currencyExchangeRateViewmodelProvider(
-          base: base,
-          symbols: targetCurrencies,
-        ).future,
+      final dao = sl<AppDatabase>().currencyRateDao;
+
+      // 1. Check if we have rates for this base currency in DB
+      final storedRates = await dao.getRatesByBase(base);
+
+      // 2. Check if all target currencies are available in stored rates
+      final storedTargets = storedRates.map((e) => e.target).toSet();
+      final allTargetsAvailable = targetCurrencies.every(
+        (target) => storedTargets.contains(target),
       );
+
+      CurrencyRateModel result;
+
+      if (allTargetsAvailable && storedRates.isNotEmpty) {
+        // 3. If all targets available, use DB rates
+        debugPrint("Using rates from local database");
+
+        // Convert stored entities to the same format as API response
+        final ratesMap = {for (var e in storedRates) e.target: e.rate};
+        result = CurrencyRateModel(
+          base: base,
+          rates: ratesMap,
+          date: storedRates.first.date, // assuming all have same date
+          success: true,
+          timestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        );
+      } else {
+        // 4. If any target missing or no data, fetch from API
+        debugPrint("Fetching rates from API");
+
+        result = await ref.read(
+          currencyExchangeRateViewModelProvider(
+            base: base,
+            symbols: targetCurrencies,
+          ).future,
+        );
+      }
 
       if (!mounted) return;
 
