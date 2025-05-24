@@ -2,8 +2,8 @@
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currencyExchangeRateViewmodelHash() =>
-    r'46a1092f89cb8d0aa0b535c1004d9ae64a8345a6';
+String _$currencyExchangeRateViewModelHash() =>
+    r'fa3ba5a943555bb51bd83f524f9afc9f7efa2c7d';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -26,7 +26,7 @@ class _SystemHash {
   }
 }
 
-abstract class _$CurrencyExchangeRateViewmodel
+abstract class _$CurrencyExchangeRateViewModel
     extends BuildlessAsyncNotifier<CurrencyRateModel> {
   late final String base;
   late final List<String> symbols;
@@ -37,31 +37,31 @@ abstract class _$CurrencyExchangeRateViewmodel
   });
 }
 
-/// See also [CurrencyExchangeRateViewmodel].
-@ProviderFor(CurrencyExchangeRateViewmodel)
-const currencyExchangeRateViewmodelProvider =
-    CurrencyExchangeRateViewmodelFamily();
+/// See also [CurrencyExchangeRateViewModel].
+@ProviderFor(CurrencyExchangeRateViewModel)
+const currencyExchangeRateViewModelProvider =
+    CurrencyExchangeRateViewModelFamily();
 
-/// See also [CurrencyExchangeRateViewmodel].
-class CurrencyExchangeRateViewmodelFamily
+/// See also [CurrencyExchangeRateViewModel].
+class CurrencyExchangeRateViewModelFamily
     extends Family<AsyncValue<CurrencyRateModel>> {
-  /// See also [CurrencyExchangeRateViewmodel].
-  const CurrencyExchangeRateViewmodelFamily();
+  /// See also [CurrencyExchangeRateViewModel].
+  const CurrencyExchangeRateViewModelFamily();
 
-  /// See also [CurrencyExchangeRateViewmodel].
-  CurrencyExchangeRateViewmodelProvider call({
+  /// See also [CurrencyExchangeRateViewModel].
+  CurrencyExchangeRateViewModelProvider call({
     required String base,
     required List<String> symbols,
   }) {
-    return CurrencyExchangeRateViewmodelProvider(
+    return CurrencyExchangeRateViewModelProvider(
       base: base,
       symbols: symbols,
     );
   }
 
   @override
-  CurrencyExchangeRateViewmodelProvider getProviderOverride(
-    covariant CurrencyExchangeRateViewmodelProvider provider,
+  CurrencyExchangeRateViewModelProvider getProviderOverride(
+    covariant CurrencyExchangeRateViewModelProvider provider,
   ) {
     return call(
       base: provider.base,
@@ -81,34 +81,34 @@ class CurrencyExchangeRateViewmodelFamily
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'currencyExchangeRateViewmodelProvider';
+  String? get name => r'currencyExchangeRateViewModelProvider';
 }
 
-/// See also [CurrencyExchangeRateViewmodel].
-class CurrencyExchangeRateViewmodelProvider extends AsyncNotifierProviderImpl<
-    CurrencyExchangeRateViewmodel, CurrencyRateModel> {
-  /// See also [CurrencyExchangeRateViewmodel].
-  CurrencyExchangeRateViewmodelProvider({
+/// See also [CurrencyExchangeRateViewModel].
+class CurrencyExchangeRateViewModelProvider extends AsyncNotifierProviderImpl<
+    CurrencyExchangeRateViewModel, CurrencyRateModel> {
+  /// See also [CurrencyExchangeRateViewModel].
+  CurrencyExchangeRateViewModelProvider({
     required String base,
     required List<String> symbols,
   }) : this._internal(
-          () => CurrencyExchangeRateViewmodel()
+          () => CurrencyExchangeRateViewModel()
             ..base = base
             ..symbols = symbols,
-          from: currencyExchangeRateViewmodelProvider,
-          name: r'currencyExchangeRateViewmodelProvider',
+          from: currencyExchangeRateViewModelProvider,
+          name: r'currencyExchangeRateViewModelProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$currencyExchangeRateViewmodelHash,
-          dependencies: CurrencyExchangeRateViewmodelFamily._dependencies,
+                  : _$currencyExchangeRateViewModelHash,
+          dependencies: CurrencyExchangeRateViewModelFamily._dependencies,
           allTransitiveDependencies:
-              CurrencyExchangeRateViewmodelFamily._allTransitiveDependencies,
+              CurrencyExchangeRateViewModelFamily._allTransitiveDependencies,
           base: base,
           symbols: symbols,
         );
 
-  CurrencyExchangeRateViewmodelProvider._internal(
+  CurrencyExchangeRateViewModelProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -124,7 +124,7 @@ class CurrencyExchangeRateViewmodelProvider extends AsyncNotifierProviderImpl<
 
   @override
   FutureOr<CurrencyRateModel> runNotifierBuild(
-    covariant CurrencyExchangeRateViewmodel notifier,
+    covariant CurrencyExchangeRateViewModel notifier,
   ) {
     return notifier.build(
       base: base,
@@ -133,10 +133,10 @@ class CurrencyExchangeRateViewmodelProvider extends AsyncNotifierProviderImpl<
   }
 
   @override
-  Override overrideWith(CurrencyExchangeRateViewmodel Function() create) {
+  Override overrideWith(CurrencyExchangeRateViewModel Function() create) {
     return ProviderOverride(
       origin: this,
-      override: CurrencyExchangeRateViewmodelProvider._internal(
+      override: CurrencyExchangeRateViewModelProvider._internal(
         () => create()
           ..base = base
           ..symbols = symbols,
@@ -152,14 +152,14 @@ class CurrencyExchangeRateViewmodelProvider extends AsyncNotifierProviderImpl<
   }
 
   @override
-  AsyncNotifierProviderElement<CurrencyExchangeRateViewmodel, CurrencyRateModel>
+  AsyncNotifierProviderElement<CurrencyExchangeRateViewModel, CurrencyRateModel>
       createElement() {
-    return _CurrencyExchangeRateViewmodelProviderElement(this);
+    return _CurrencyExchangeRateViewModelProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is CurrencyExchangeRateViewmodelProvider &&
+    return other is CurrencyExchangeRateViewModelProvider &&
         other.base == base &&
         other.symbols == symbols;
   }
@@ -176,7 +176,7 @@ class CurrencyExchangeRateViewmodelProvider extends AsyncNotifierProviderImpl<
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CurrencyExchangeRateViewmodelRef
+mixin CurrencyExchangeRateViewModelRef
     on AsyncNotifierProviderRef<CurrencyRateModel> {
   /// The parameter `base` of this provider.
   String get base;
@@ -185,16 +185,16 @@ mixin CurrencyExchangeRateViewmodelRef
   List<String> get symbols;
 }
 
-class _CurrencyExchangeRateViewmodelProviderElement
-    extends AsyncNotifierProviderElement<CurrencyExchangeRateViewmodel,
-        CurrencyRateModel> with CurrencyExchangeRateViewmodelRef {
-  _CurrencyExchangeRateViewmodelProviderElement(super.provider);
+class _CurrencyExchangeRateViewModelProviderElement
+    extends AsyncNotifierProviderElement<CurrencyExchangeRateViewModel,
+        CurrencyRateModel> with CurrencyExchangeRateViewModelRef {
+  _CurrencyExchangeRateViewModelProviderElement(super.provider);
 
   @override
-  String get base => (origin as CurrencyExchangeRateViewmodelProvider).base;
+  String get base => (origin as CurrencyExchangeRateViewModelProvider).base;
   @override
   List<String> get symbols =>
-      (origin as CurrencyExchangeRateViewmodelProvider).symbols;
+      (origin as CurrencyExchangeRateViewModelProvider).symbols;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -24,7 +24,15 @@ void _initRepositories() {
     () => CurrencyListingRemoteRepository(),
   );
 
+  sl.registerLazySingleton<CurrencyRateRepository>(
+    () => CurrencyRateRepository(),
+  );
+
   sl.registerLazySingleton<CurrencyRateRemoteRepository>(
     () => CurrencyRateRemoteRepository(),
+  );
+
+  sl.registerLazySingleton<CurrencyRateDao>(
+    () => sl<AppDatabase>().currencyRateDao,
   );
 }
