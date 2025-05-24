@@ -7,7 +7,7 @@ import 'package:advance_currency_convertor/features/feature_setting/view/widget/
 import 'package:advance_currency_convertor/features/feature_setting/view/widget/header_text.dart';
 import 'package:advance_currency_convertor/features/feature_setting/view/widget/select_currency_modal.dart';
 import 'package:advance_currency_convertor/core/widgets/currency_selection_modal.dart';
-import 'package:advance_currency_convertor/features/home/providers/home_state_provider.dart';
+import 'package:advance_currency_convertor/features/currency/providers/currency_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -40,6 +40,8 @@ dev_dependencies:
     git:
       url: https://github.com/vitusortner/floor.git
       path: floor_generator
+  riverpod_test: ^0.1.9
+  mockito: ^5.4.5
 
 flutter:
 

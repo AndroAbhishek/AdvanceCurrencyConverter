@@ -6,7 +6,7 @@ import 'package:advance_currency_convertor/features/currency_list/model/currency
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
-import '../../../service_locator_dependecies.dart';
+import '../../../service_locator_dependencies.dart';
 
 class CurrencyListingRemoteRepository {
   Future<Either<AppFailure, CurrencyListModel>> getCurrencyListing() async {

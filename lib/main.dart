@@ -6,8 +6,8 @@ import 'package:advance_currency_convertor/core/widgets/custom_app_bar.dart';
 import 'package:advance_currency_convertor/core/widgets/custom_icon.dart';
 import 'package:advance_currency_convertor/features/currency_list/view/pages/currency_listing_screen.dart';
 import 'package:advance_currency_convertor/features/feature_setting/view/pages/currency_settings.dart';
-import 'package:advance_currency_convertor/features/home/view/pages/home_page.dart';
-import 'package:advance_currency_convertor/service_locator_dependecies.dart';
+import 'package:advance_currency_convertor/features/currency/view/pages/currency_page.dart';
+import 'package:advance_currency_convertor/service_locator_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:molten_navigationbar_flutter/molten_navigationbar_flutter.dart';
@@ -43,7 +43,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   final List<Widget> _screens = [
     CurrenciesListScreen(),
-    HomePage(),
+    CurrencyPage(),
     CurrencySettings(),
   ];
 

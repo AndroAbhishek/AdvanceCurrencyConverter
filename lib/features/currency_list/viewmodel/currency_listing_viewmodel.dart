@@ -2,7 +2,7 @@ import 'package:advance_currency_convertor/core/database/app_database.dart';
 import 'package:advance_currency_convertor/features/currency_list/db/entities/currency_entity.dart';
 import 'package:advance_currency_convertor/features/currency_list/model/currency_list_model.dart';
 import 'package:advance_currency_convertor/features/currency_list/repositories/currency_listing_remote_repository.dart';
-import 'package:advance_currency_convertor/service_locator_dependecies.dart';
+import 'package:advance_currency_convertor/service_locator_dependencies.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'currency_listing_viewmodel.g.dart';
 
