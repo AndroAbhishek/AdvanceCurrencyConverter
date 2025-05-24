@@ -1,11 +1,17 @@
-part of 'service_locator_dependecies.dart';
+part of 'service_locator_dependencies.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initDependecies() async {
+  await _initSharedPreferences();
   await _initDatabase();
   _initDioClient();
   _initRepositories();
+}
+
+Future<void> _initSharedPreferences() async {
+  final prefs = await SharedPreferences.getInstance();
+  sl.registerSingleton<SharedPreferences>(prefs);
 }
 
 Future<void> _initDatabase() async {
@@ -13,6 +19,8 @@ Future<void> _initDatabase() async {
       await $FloorAppDatabase.databaseBuilder('currency_db.db').build();
 
   sl.registerSingleton<AppDatabase>(database);
+
+  sl.registerLazySingleton<CurrencyDBService>(() => CurrencyDBService());
 }
 
 void _initDioClient() {
@@ -24,13 +32,11 @@ void _initRepositories() {
     () => CurrencyListingRemoteRepository(),
   );
 
-  sl.registerLazySingleton<CurrencyRateRepository>(
+  sl.registerLazySingleton<ICurrencyRateRepository>(
     () => CurrencyRateRepository(),
   );
 
-  sl.registerLazySingleton<CurrencyRateRemoteRepository>(
-    () => CurrencyRateRemoteRepository(),
-  );
+  sl.registerLazySingleton<CurrencyApiService>(() => CurrencyApiService());
 
   sl.registerLazySingleton<CurrencyRateDao>(
     () => sl<AppDatabase>().currencyRateDao,

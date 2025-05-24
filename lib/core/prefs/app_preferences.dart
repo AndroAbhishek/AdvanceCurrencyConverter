@@ -1,27 +1,31 @@
+import 'package:advance_currency_convertor/service_locator_dependencies.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
-  // Set a String
+  // static SharedPreferences get _prefs => sl<SharedPreferences>();
+
   static Future<void> setString(String key, String value) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = sl<SharedPreferences>();
     await prefs.setString(key, value);
   }
 
-  // Get a String
-  static Future<String?> getString(String key) async {
-    final prefs = await SharedPreferences.getInstance();
+  static String? getStringSync(String key) {
+    final prefs = sl<SharedPreferences>();
     return prefs.getString(key);
   }
 
-  // Remove a key
+  static Future<String?> getString(String key) async {
+    final prefs = sl<SharedPreferences>();
+    return prefs.getString(key);
+  }
+
   static Future<void> remove(String key) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = sl<SharedPreferences>();
     await prefs.remove(key);
   }
 
-  // Clear all preferences
   static Future<void> clearAll() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = sl<SharedPreferences>();
     await prefs.clear();
   }
 }
