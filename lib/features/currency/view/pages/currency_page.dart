@@ -53,8 +53,16 @@ class _CurrencyPageState extends ConsumerState<CurrencyPage>
     }
   }
 
-  void handleRemoveCurrencyCard(int key) {
+  void handleRemoveCurrencyCard(int key) async {
     ref.read(currencyViewModelProvider.notifier).removeCurrencyCard(key);
+    await Future.delayed(Duration(milliseconds: 10));
+
+    final remaining = ref.read(cardKeysProvider);
+    if (remaining.isNotEmpty) {
+      await ref
+          .read(currencyViewModelProvider.notifier)
+          .calculateExchangeRate();
+    }
   }
 
   void handleCurrencySelection(int key, String value) {
@@ -102,6 +110,7 @@ class _CurrencyPageState extends ConsumerState<CurrencyPage>
     final calculatedAmount = ref.watch(calculatedAmountProvider);
     final isLoading = ref.watch(isLoadingProvider);
     final baseCurrency = ref.watch(baseCurrencyProvider);
+    final focusNodes = ref.watch(focusNodesProvider);
 
     return Scaffold(
       body: Stack(
@@ -125,6 +134,7 @@ class _CurrencyPageState extends ConsumerState<CurrencyPage>
                         textControllers: textControllers,
                         calculatedAmount: calculatedAmount,
                         baseCurrency: baseCurrency,
+                        focusNodes: focusNodes,
                       ),
                 ),
               ),
@@ -150,6 +160,7 @@ class _CurrencyPageState extends ConsumerState<CurrencyPage>
     required Map<int, TextEditingController> textControllers,
     required String calculatedAmount,
     required String? baseCurrency,
+    required Map<int, FocusNode> focusNodes,
   }) {
     final currencyOptions =
         currencyList.symbols.entries
@@ -179,6 +190,7 @@ class _CurrencyPageState extends ConsumerState<CurrencyPage>
                         onCurrencySelected:
                             (value) => handleCurrencySelection(key, value),
                         onRemove: () => handleRemoveCurrencyCard(key),
+                        focusNode: focusNodes[key]!,
                       );
                     }).toList(),
               ),

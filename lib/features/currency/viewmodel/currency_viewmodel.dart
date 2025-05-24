@@ -55,6 +55,7 @@ class CurrencyViewModel extends _$CurrencyViewModel {
 
     final cardKeys = ref.read(cardKeysProvider);
     final textControllers = ref.read(textControllersProvider);
+    final focusNodes = ref.read(focusNodesProvider);
 
     final validationError = validateAllCards();
     if (validationError != null) {
@@ -67,6 +68,16 @@ class CurrencyViewModel extends _$CurrencyViewModel {
       ...textControllers,
       nextKey: TextEditingController(),
     };
+    final newFocusNode = FocusNode();
+    ref.read(focusNodesProvider.notifier).state = {
+      ...focusNodes,
+      nextKey: newFocusNode,
+    };
+
+    // Delay to allow UI to rebuild, then request focus
+    Future.delayed(Duration(milliseconds: 100), () {
+      newFocusNode.requestFocus();
+    });
   }
 
   Future<void> checkIfBaseCurrencyExists() async {
@@ -193,8 +204,8 @@ class CurrencyViewModel extends _$CurrencyViewModel {
         result,
       );
 
-      ref.read(calculatedAmountProvider.notifier).state =
-          "${base.toUpperCase()} ${totalBaseAmount.toStringAsFixed(2)}";
+      ref.read(calculatedAmountProvider.notifier).state = totalBaseAmount
+          .toStringAsFixed(2);
     } catch (e) {
       debugPrint("Error in calculateExchangeRate: $e");
       rethrow;

@@ -11,6 +11,8 @@ final textControllersProvider = StateProvider<Map<int, TextEditingController>>(
   (ref) => {},
 );
 
+final focusNodesProvider = StateProvider<Map<int, FocusNode>>((ref) => {});
+
 final calculatedAmountProvider = StateProvider<String>((ref) => "0.00");
 
 final isLoadingProvider = StateProvider<bool>((ref) => false);

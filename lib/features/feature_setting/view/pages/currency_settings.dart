@@ -38,6 +38,7 @@ class _CurrencySettingsState extends ConsumerState<CurrencySettings> {
 
   Future<void> saveBaseCurrency(String value) async {
     await AppPreferences.setString(TextConstants.baseCurrency, value);
+    ref.read(baseCurrencyProvider.notifier).state = value;
     resetAllCards(ref);
   }
 
