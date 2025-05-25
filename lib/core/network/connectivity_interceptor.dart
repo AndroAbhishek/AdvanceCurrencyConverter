@@ -1,3 +1,4 @@
+import 'package:advance_currency_convertor/core/constants/text_constants.dart';
 import 'package:dio/dio.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -8,13 +9,15 @@ class ConnectivityInterceptor extends Interceptor {
 
   @override
   Future<void> onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     final connectivityResult = await _connectivity.checkConnectivity();
     if (connectivityResult.first == ConnectivityResult.none) {
       handler.reject(
         DioException(
           requestOptions: options,
-          error: 'No internet connection!',
+          error: TextConstants.noInternentConnection,
           type: DioExceptionType.connectionError,
         ),
       );

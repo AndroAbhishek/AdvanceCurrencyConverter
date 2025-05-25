@@ -21,7 +21,7 @@ class CurrencyViewModel extends _$CurrencyViewModel {
     final savedCurrency = await AppPreferences.getString(
       TextConstants.baseCurrency,
     );
-    debugPrint("savecurrency ${savedCurrency.toString()}");
+
     ref.read(baseCurrencyProvider.notifier).state = savedCurrency;
   }
 
@@ -44,7 +44,7 @@ class CurrencyViewModel extends _$CurrencyViewModel {
 
       final parsedAmount = double.tryParse(amount);
       if (parsedAmount == null || parsedAmount <= 0) {
-        return "Please enter a valid positive amount.";
+        return TextConstants.positiveAmountValidation;
       }
     }
     return null;
@@ -55,6 +55,7 @@ class CurrencyViewModel extends _$CurrencyViewModel {
 
     final cardKeys = ref.read(cardKeysProvider);
     final textControllers = ref.read(textControllersProvider);
+    final focusNodes = ref.read(focusNodesProvider);
 
     final validationError = validateAllCards();
     if (validationError != null) {
@@ -67,6 +68,16 @@ class CurrencyViewModel extends _$CurrencyViewModel {
       ...textControllers,
       nextKey: TextEditingController(),
     };
+    final newFocusNode = FocusNode();
+    ref.read(focusNodesProvider.notifier).state = {
+      ...focusNodes,
+      nextKey: newFocusNode,
+    };
+
+    // Delay to allow UI to rebuild, then request focus
+    Future.delayed(Duration(milliseconds: 100), () {
+      newFocusNode.requestFocus();
+    });
   }
 
   Future<void> checkIfBaseCurrencyExists() async {
@@ -80,9 +91,7 @@ class CurrencyViewModel extends _$CurrencyViewModel {
 
     final base = extractCurrencyCode(savedCurrency);
     if (base == null || base.isEmpty) {
-      throw ValidationException(
-        "Base currency not found. Please set your base currency in settings.",
-      );
+      throw ValidationException(TextConstants.baseCurrencyNotFound);
     }
   }
 
@@ -105,7 +114,8 @@ class CurrencyViewModel extends _$CurrencyViewModel {
     ref.read(textControllersProvider.notifier).state = updatedControllers;
 
     if (ref.read(cardKeysProvider).isEmpty) {
-      ref.read(calculatedAmountProvider.notifier).state = "0.00";
+      ref.read(calculatedAmountProvider.notifier).state =
+          TextConstants.defaultCurrency;
     }
   }
 
@@ -131,9 +141,7 @@ class CurrencyViewModel extends _$CurrencyViewModel {
     try {
       // Check if any currency card added
       if (cardKeys.isEmpty) {
-        throw ValidationException(
-          "Please add at least one currency to convert.",
-        );
+        throw ValidationException(TextConstants.addAtleaseOneCurrency);
       }
 
       // Validate all cards
@@ -153,9 +161,7 @@ class CurrencyViewModel extends _$CurrencyViewModel {
 
       final base = extractCurrencyCode(savedCurrency);
       if (base == null || base.isEmpty) {
-        throw ValidationException(
-          "Base currency not found. Please set your base currency in settings.",
-        );
+        throw ValidationException(TextConstants.baseCurrencyNotFound);
       }
 
       // Extract unique target currencies
@@ -168,12 +174,8 @@ class CurrencyViewModel extends _$CurrencyViewModel {
               .toSet()
               .toList();
 
-      debugPrint("Base: $base, Targets: $targetCurrencies");
-
       if (targetCurrencies.isEmpty) {
-        throw ValidationException(
-          "Please select at least one target currency different from your base currency ($base).",
-        );
+        throw ValidationException("${TextConstants.targetCurrency} ($base).");
       }
 
       loadingNotifier.state = true;
@@ -181,7 +183,7 @@ class CurrencyViewModel extends _$CurrencyViewModel {
       final result = await _getExchangeRates(base, targetCurrencies);
 
       if (!result.success) {
-        throw Exception("Failed to fetch exchange rates. Please try again.");
+        throw Exception(TextConstants.failedToFetchExchangeRates);
       }
 
       // Calculate total amount in base currency
@@ -193,10 +195,9 @@ class CurrencyViewModel extends _$CurrencyViewModel {
         result,
       );
 
-      ref.read(calculatedAmountProvider.notifier).state =
-          "${base.toUpperCase()} ${totalBaseAmount.toStringAsFixed(2)}";
+      ref.read(calculatedAmountProvider.notifier).state = totalBaseAmount
+          .toStringAsFixed(2);
     } catch (e) {
-      debugPrint("Error in calculateExchangeRate: $e");
       rethrow;
     } finally {
       loadingNotifier.state = false;
@@ -220,7 +221,6 @@ class CurrencyViewModel extends _$CurrencyViewModel {
 
     if (allTargetsAvailable && storedRates.isNotEmpty) {
       // Use DB rates
-      debugPrint("Using rates from local database");
       final ratesMap = {for (var e in storedRates) e.target: e.rate};
       return CurrencyRateModel(
         base: base,

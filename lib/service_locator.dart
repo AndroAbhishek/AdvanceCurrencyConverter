@@ -16,7 +16,7 @@ Future<void> _initSharedPreferences() async {
 
 Future<void> _initDatabase() async {
   final database =
-      await $FloorAppDatabase.databaseBuilder('currency_db.db').build();
+      await $FloorAppDatabase.databaseBuilder(TextConstants.dbVersion).build();
 
   sl.registerSingleton<AppDatabase>(database);
 

@@ -11,6 +11,8 @@ final textControllersProvider = StateProvider<Map<int, TextEditingController>>(
   (ref) => {},
 );
 
+final focusNodesProvider = StateProvider<Map<int, FocusNode>>((ref) => {});
+
 final calculatedAmountProvider = StateProvider<String>((ref) => "0.00");
 
 final isLoadingProvider = StateProvider<bool>((ref) => false);
@@ -18,7 +20,6 @@ final isLoadingProvider = StateProvider<bool>((ref) => false);
 final baseCurrencyProvider = StateProvider<String?>((ref) => null);
 
 final appDatabaseProvider = Provider<AppDatabase>((ref) {
-  // Normally you'd initialize it with a real DB here
   throw UnimplementedError();
 });
 final currencyRateDaoProvider = Provider<CurrencyRateDao>((ref) {

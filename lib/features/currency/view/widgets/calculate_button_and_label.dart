@@ -35,32 +35,40 @@ class CalculateButtonAndLabel extends StatelessWidget {
               ),
               const SizedBox(width: 15),
               Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CustomText(
-                      text: extractCurrencyCode(baseCurrency) ?? 'N/A',
-                      color: Pallete.backgroundColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    const SizedBox(height: 4),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: CustomText(
-                        text:
-                            calculatedAmountText.isNotEmpty
-                                ? calculatedAmountText
-                                : '0.00',
-                        color: Pallete.backgroundColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
+                child:
+                    baseCurrency.isEmpty
+                        ? const CustomText(
+                          text: '0.00',
+                          color: Pallete.backgroundColor,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                        )
+                        : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CustomText(
+                              text: extractCurrencyCode(baseCurrency) ?? 'N/A',
+                              color: Pallete.backgroundColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            const SizedBox(height: 4),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: CustomText(
+                                text:
+                                    calculatedAmountText.isNotEmpty
+                                        ? calculatedAmountText
+                                        : '0.00',
+                                color: Pallete.backgroundColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
               ),
             ],
           ),

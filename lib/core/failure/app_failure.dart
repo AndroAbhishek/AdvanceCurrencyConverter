@@ -1,7 +1,9 @@
+import 'package:advance_currency_convertor/core/constants/text_constants.dart';
+
 class AppFailure {
   final String message;
-  AppFailure([this.message = 'Sorry, an unexpected error occurred!']);
+  AppFailure([this.message = TextConstants.unexpectedOccurred]);
 
   @override
-  String toString() => 'AppFailure(message: $message)';
+  String toString() => '${TextConstants.appFailure} $message)';
 }

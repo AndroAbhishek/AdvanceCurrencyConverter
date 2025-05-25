@@ -23,12 +23,11 @@ class CurrencySelectionModal extends StatelessWidget {
   });
 
   void handleCurrencySelection(String item, BuildContext context) {
-    // Check if this is the base currency - if so, don't allow selection
     if (baseCurrency != null) {
       String baseCurrencyCode = extractCurrencyCode(baseCurrency!) ?? '';
       String itemCode = extractCurrencyCode(item) ?? '';
       if (baseCurrencyCode == itemCode) {
-        return; // Don't allow selection of base currency
+        return;
       }
     }
 
@@ -109,9 +108,9 @@ class CurrencySelectionModal extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Pallete.gradient1,
+                        color: Pallete.greenColor,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Pallete.gradient3, width: 1),
+                        border: Border.all(color: Pallete.whiteColor, width: 1),
                       ),
                       child: const CustomText(
                         text: "Base",
@@ -128,9 +127,9 @@ class CurrencySelectionModal extends StatelessWidget {
                       ? Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Pallete.gradient1,
+                          color: Pallete.greenColor,
                           border: Border.all(
-                            color: Pallete.gradient3,
+                            color: Pallete.whiteColor,
                             width: 2,
                           ),
                         ),
@@ -138,7 +137,7 @@ class CurrencySelectionModal extends StatelessWidget {
                           padding: EdgeInsets.all(4.0),
                           child: CustomIcon(
                             icon: Icons.check,
-                            color: Pallete.greenColor,
+                            color: Pallete.whiteColor,
                             size: 16,
                           ),
                         ),

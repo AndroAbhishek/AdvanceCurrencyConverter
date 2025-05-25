@@ -1,5 +1,3 @@
-// test/mocks.dart
-
 import 'package:advance_currency_convertor/core/constants/text_constants.dart';
 import 'package:advance_currency_convertor/features/currency/db/dao/currency_rate_dao.dart';
 import 'package:advance_currency_convertor/features/currency/db/entities/currency_rate_entity.dart';
@@ -26,23 +24,49 @@ void main() {
   late MockAppDatabase mockDatabase;
   late MockCurrencyRateDao mockCurrencyRateDao;
 
-  setUp(() {
+  setUp(() async {
     mockRepository = MockCurrencyRateRepository();
     mockDatabase = MockAppDatabase();
     mockCurrencyRateDao = MockCurrencyRateDao();
 
     when(mockDatabase.currencyRateDao).thenReturn(mockCurrencyRateDao);
 
+    final defaultMockRates = [
+      CurrencyRateEntity(
+        base: "USD",
+        target: "INR",
+        rate: 80.0,
+        date: "2024-01-01",
+      ),
+    ];
+    when(
+      mockCurrencyRateDao.getRatesByBase(any),
+    ).thenAnswer((_) async => defaultMockRates);
+
+    SharedPreferences.setMockInitialValues({
+      TextConstants.baseCurrency: "United States Dollar - (USD)",
+    });
+    final prefs = await SharedPreferences.getInstance();
+
+    if (sl.isRegistered<SharedPreferences>()) {
+      await sl.unregister<SharedPreferences>();
+    }
+    sl.registerSingleton<SharedPreferences>(prefs);
+
     container = ProviderContainer(
       overrides: [
         currencyRateRepositoryProvider.overrideWithValue(mockRepository),
         currencyRateDaoProvider.overrideWithValue(mockCurrencyRateDao),
-        baseCurrencyProvider.overrideWith((ref) => "USD (US Dollar)"),
+        baseCurrencyProvider.overrideWith(
+          (ref) => "United States Dollar - (USD)",
+        ),
         cardKeysProvider.overrideWith((ref) => [1]),
         textControllersProvider.overrideWith(
           (ref) => {1: TextEditingController(text: "100")},
         ),
-        selectedValuesProvider.overrideWith((ref) => {1: "INR (Indian Rupee)"}),
+        selectedValuesProvider.overrideWith(
+          (ref) => {1: "Indian Rupee - (INR)"},
+        ),
         isLoadingProvider.overrideWith((ref) => false),
       ],
     );
@@ -64,56 +88,32 @@ void main() {
     });
 
     test('validateAllCards returns error for empty amount', () {
-      container = ProviderContainer(
+      // Create a new container for this specific test
+      final testContainer = ProviderContainer(
         overrides: [
+          currencyRateRepositoryProvider.overrideWithValue(mockRepository),
+          currencyRateDaoProvider.overrideWithValue(mockCurrencyRateDao),
           cardKeysProvider.overrideWith((ref) => [1]),
           textControllersProvider.overrideWith(
             (ref) => {1: TextEditingController(text: "")},
           ),
           selectedValuesProvider.overrideWith(
-            (ref) => {1: "INR (Indian Rupee)"},
+            (ref) => {1: "Indian Rupee - (INR)"},
           ),
         ],
       );
 
-      final viewModel = container.read(currencyViewModelProvider.notifier);
+      final viewModel = testContainer.read(currencyViewModelProvider.notifier);
       final result = viewModel.validateAllCards();
       expect(result, TextConstants.amountValidation);
+
+      testContainer.dispose();
     });
 
     test(
       'calculateExchangeRate should update calculatedAmountProvider',
       () async {
-        // Set up AppPreferences with base currency
-        SharedPreferences.setMockInitialValues({
-          TextConstants.baseCurrency: "USD (US Dollar)",
-        });
-
-        final prefs = await SharedPreferences.getInstance();
-
-        if (sl.isRegistered<SharedPreferences>()) {
-          sl.unregister<SharedPreferences>();
-        }
-        sl.registerSingleton<SharedPreferences>(prefs);
-
-        container = ProviderContainer(
-          overrides: [
-            currencyRateRepositoryProvider.overrideWithValue(mockRepository),
-            currencyRateDaoProvider.overrideWithValue(mockCurrencyRateDao),
-            // Don't override baseCurrencyProvider, let it read from AppPreferences
-            //baseCurrencyProvider.overrideWith((ref) => "USD (US Dollar)"),
-            cardKeysProvider.overrideWith((ref) => [1]),
-            selectedValuesProvider.overrideWith(
-              (ref) => {1: "INR (Indian Rupee)"},
-            ),
-            textControllersProvider.overrideWith(
-              (ref) => {1: TextEditingController(text: "100")},
-            ),
-            isLoadingProvider.overrideWith((ref) => false),
-            calculatedAmountProvider.overrideWith((ref) => "0.00"),
-          ],
-        );
-
+        reset(mockCurrencyRateDao);
         final mockRates = [
           CurrencyRateEntity(
             base: "USD",
@@ -122,27 +122,21 @@ void main() {
             date: "2024-01-01",
           ),
         ];
-
         when(
-          mockCurrencyRateDao.getRatesByBase("USD"),
+          mockCurrencyRateDao.getRatesByBase(any),
         ).thenAnswer((_) async => mockRates);
 
         final viewModel = container.read(currencyViewModelProvider.notifier);
         await viewModel.calculateExchangeRate();
 
         final calculated = container.read(calculatedAmountProvider);
-        expect(calculated, "USD 1.25"); // 100 / 80 = 1.25
-
-        container.dispose();
+        expect(calculated, "1.25");
+        verifyNever(mockCurrencyRateDao.getRatesByBase(any));
       },
     );
 
     test('throws ValidationException when no currency card is added', () async {
-      SharedPreferences.setMockInitialValues({
-        TextConstants.baseCurrency: "USD (US Dollar)",
-      });
-
-      container = ProviderContainer(
+      final testContainer = ProviderContainer(
         overrides: [
           currencyRateRepositoryProvider.overrideWithValue(mockRepository),
           currencyRateDaoProvider.overrideWithValue(mockCurrencyRateDao),
@@ -153,13 +147,14 @@ void main() {
         ],
       );
 
-      final viewModel = container.read(currencyViewModelProvider.notifier);
+      final viewModel = testContainer.read(currencyViewModelProvider.notifier);
 
       expect(
         () async => await viewModel.calculateExchangeRate(),
         throwsA(isA<ValidationException>()),
       );
-      container.dispose();
+
+      testContainer.dispose();
     });
 
     test('removeCurrencyCard should update providers and clear controller', () {

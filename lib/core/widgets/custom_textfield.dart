@@ -9,6 +9,7 @@ class CustomTextfield extends StatelessWidget {
   final Function(String)? onSubmitted;
   final VoidCallback? onEditingComplete;
   final Widget? prefixIcon;
+  final FocusNode? focusNode;
 
   const CustomTextfield({
     super.key,
@@ -20,12 +21,14 @@ class CustomTextfield extends StatelessWidget {
     this.onSubmitted,
     this.onEditingComplete,
     this.prefixIcon,
+    this.focusNode,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      focusNode: focusNode,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       onChanged: onChanged,

@@ -14,6 +14,7 @@ class CurrencyCard extends StatelessWidget {
   final List<String>? selectedCurrencies;
   final TextEditingController textController;
   final String? baseCurrency;
+  final FocusNode focusNode;
 
   const CurrencyCard({
     super.key,
@@ -24,6 +25,7 @@ class CurrencyCard extends StatelessWidget {
     required this.textController,
     this.selectedCurrencies,
     this.baseCurrency,
+    required this.focusNode,
   });
 
   void showCurrencySelectionDialog(BuildContext context) {
@@ -65,6 +67,7 @@ class CurrencyCard extends StatelessWidget {
                     signed: false,
                   ),
                   textInputAction: TextInputAction.done,
+                  focusNode: focusNode,
                 ),
               ),
               const SizedBox(width: 10),

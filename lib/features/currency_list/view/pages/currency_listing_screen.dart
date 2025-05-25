@@ -25,7 +25,15 @@ class CurrenciesListScreen extends ConsumerWidget {
     return Scaffold(
       body: currencyState.when(
         loading: () => const Loader(),
-        error: (err, _) => Center(child: CustomText(text: err.toString())),
+        error:
+            (err, _) => Center(
+              child: CustomText(
+                text:
+                    err.toString().contains('No internet connection')
+                        ? 'No internet connection. Please connect and try again.'
+                        : err.toString(),
+              ),
+            ),
         data: (currencyList) {
           final symbols = currencyList.symbols;
 

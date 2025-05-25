@@ -1,8 +1,15 @@
+import 'dart:io';
+
+import 'package:advance_currency_convertor/core/constants/text_constants.dart';
 import 'package:advance_currency_convertor/core/theme/color_pallete.dart';
 import 'package:advance_currency_convertor/core/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
-final List<String> titles = ['Currency Converter', 'Currency List', 'Settings'];
+final List<String> titles = [
+  TextConstants.currencyList,
+  TextConstants.currencyConverter,
+  TextConstants.settings,
+];
 
 void showSnackBar(
   BuildContext context,
@@ -40,14 +47,23 @@ Future<void> showErrorDialog(BuildContext context, String message) {
     context: context,
     builder:
         (context) => AlertDialog(
-          title: const Text('Error'),
+          title: const Text(TextConstants.error),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+              child: const Text(TextConstants.ok),
             ),
           ],
         ),
   );
+}
+
+Future<bool> hasActiveInternetConnection() async {
+  try {
+    final result = await InternetAddress.lookup(TextConstants.google);
+    return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+  } catch (_) {
+    return false;
+  }
 }
