@@ -1,8 +1,10 @@
+import 'package:advance_currency_convertor/core/constants/text_constants.dart';
 import 'package:advance_currency_convertor/core/database/app_database.dart';
 import 'package:advance_currency_convertor/features/currency_list/db/entities/currency_entity.dart';
 import 'package:advance_currency_convertor/features/currency_list/model/currency_list_model.dart';
 import 'package:advance_currency_convertor/features/currency_list/repositories/currency_listing_remote_repository.dart';
 import 'package:advance_currency_convertor/service_locator_dependencies.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'currency_listing_viewmodel.g.dart';
 
@@ -13,6 +15,12 @@ class CurrencyListingViewmodel extends _$CurrencyListingViewmodel {
     final dao = sl<AppDatabase>().currencyDao;
     final cached = await dao.getAllCurrencies();
 
+    final connectivityResult = await Connectivity().checkConnectivity();
+    final hasInternet = connectivityResult.first != ConnectivityResult.none;
+
+    // If there are cached currencies, return them
+    // This avoids unnecessary network calls if the data is already available
+    // and ensures the app can function offline
     if (cached.isNotEmpty) {
       return CurrencyListModel(
         success: true,
@@ -20,53 +28,25 @@ class CurrencyListingViewmodel extends _$CurrencyListingViewmodel {
       );
     }
 
+    if (!hasInternet) {
+      throw Exception(TextConstants.noInternentConnection);
+    }
+
+    // If no cached data is available and there is internet, fetch from remote repository
+    // This is where the app fetches the latest currency data from the API
     final res =
         await sl<CurrencyListingRemoteRepository>().getCurrencyListing();
 
     return await res.fold((failure) async => throw failure.message, (
       currencyList,
     ) async {
-      // Save fetched data to DB for caching
       final entityList =
           currencyList.symbols.entries
               .map((e) => CurrencyEntity(code: e.key, name: e.value))
               .toList();
 
       await dao.insertCurrencies(entityList);
-
-      // Return the fresh data
       return currencyList;
     });
   }
 }
-
-
-
-
-
-
-// Future<void> refresh() async {
-  //   state = const AsyncValue.loading();
-
-  //   final dao = sl<AppDatabase>().currencyDao;
-  //   final res =
-  //       await sl<CurrencyListingRemoteRepository>().getCurrencyListing();
-
-  //   res.fold(
-  //     (failure) {
-  //       state = AsyncValue.error(failure.message, StackTrace.current);
-  //     },
-  //     (currencyList) async {
-  //       // Update local cache in DB
-  //       final entityList =
-  //           currencyList.symbols.entries
-  //               .map((e) => CurrencyEntity(code: e.key, name: e.value))
-  //               .toList();
-
-  //       await dao.clearCurrencies(); // Clear old data before inserting new
-  //       await dao.insertCurrencies(entityList);
-
-  //       state = AsyncValue.data(currencyList);
-  //     },
-  //   );
-  // }

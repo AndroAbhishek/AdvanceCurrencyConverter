@@ -3,6 +3,7 @@ import 'package:advance_currency_convertor/core/theme/color_pallete.dart';
 import 'package:advance_currency_convertor/core/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
+// A widget that displays the base currency card with the given currency text in the center of screen.
 class BaseCurrencyCard extends StatelessWidget {
   final String currencyText;
 

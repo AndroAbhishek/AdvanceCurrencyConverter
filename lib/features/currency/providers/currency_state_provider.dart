@@ -20,7 +20,6 @@ final isLoadingProvider = StateProvider<bool>((ref) => false);
 final baseCurrencyProvider = StateProvider<String?>((ref) => null);
 
 final appDatabaseProvider = Provider<AppDatabase>((ref) {
-  // Normally you'd initialize it with a real DB here
   throw UnimplementedError();
 });
 final currencyRateDaoProvider = Provider<CurrencyRateDao>((ref) {

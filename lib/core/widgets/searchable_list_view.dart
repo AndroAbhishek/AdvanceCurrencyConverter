@@ -1,3 +1,4 @@
+import 'package:advance_currency_convertor/core/constants/text_constants.dart';
 import 'package:advance_currency_convertor/core/widgets/custom_icon.dart';
 import 'package:advance_currency_convertor/core/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class SearchableListView<T> extends StatefulWidget {
     required this.items,
     required this.itemLabel,
     required this.itemBuilder,
-    this.hintText = 'Search...',
+    this.hintText = TextConstants.searchText,
   });
 
   @override

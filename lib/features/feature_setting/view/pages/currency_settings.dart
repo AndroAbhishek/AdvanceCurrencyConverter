@@ -27,6 +27,7 @@ class _CurrencySettingsState extends ConsumerState<CurrencySettings> {
     loadBaseCurrency();
   }
 
+  // Load the base currency from preferences when the widget is initialized
   Future<void> loadBaseCurrency() async {
     final savedCurrency = await AppPreferences.getString(
       TextConstants.baseCurrency,
@@ -36,12 +37,15 @@ class _CurrencySettingsState extends ConsumerState<CurrencySettings> {
     });
   }
 
+  // Save the selected base currency to preferences and update the state
   Future<void> saveBaseCurrency(String value) async {
     await AppPreferences.setString(TextConstants.baseCurrency, value);
     ref.read(baseCurrencyProvider.notifier).state = value;
     resetAllCards(ref);
   }
 
+  // Reset all cards and clear the state when the base currency is changed
+  // This function disposes of all text controllers and resets the state providers
   void resetAllCards(WidgetRef ref) {
     final textControllers = ref.read(textControllersProvider);
     for (final controller in textControllers.values) {
@@ -50,9 +54,11 @@ class _CurrencySettingsState extends ConsumerState<CurrencySettings> {
     ref.read(cardKeysProvider.notifier).state = [];
     ref.read(selectedValuesProvider.notifier).state = {};
     ref.read(textControllersProvider.notifier).state = {};
-    ref.read(calculatedAmountProvider.notifier).state = "0.00";
+    ref.read(calculatedAmountProvider.notifier).state =
+        TextConstants.defaultCurrency;
   }
 
+  // Show a dialog to select a new base currency
   void showCurrencySelectionDialog(
     BuildContext context,
     List<String> currencyOptions,

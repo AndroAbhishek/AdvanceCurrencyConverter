@@ -2,8 +2,6 @@ import 'package:advance_currency_convertor/service_locator_dependencies.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
-  // static SharedPreferences get _prefs => sl<SharedPreferences>();
-
   static Future<void> setString(String key, String value) async {
     final prefs = sl<SharedPreferences>();
     await prefs.setString(key, value);

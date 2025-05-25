@@ -1,3 +1,4 @@
+import 'package:advance_currency_convertor/core/constants/text_constants.dart';
 import 'package:advance_currency_convertor/core/theme/color_pallete.dart';
 import 'package:advance_currency_convertor/core/utils.dart';
 import 'package:advance_currency_convertor/core/widgets/custom_text.dart';
@@ -90,10 +91,14 @@ class _CurrencyPageState extends ConsumerState<CurrencyPage>
         );
       }
     } catch (e) {
+      final errorMessage =
+          e is ValidationException
+              ? e.message
+              : e.toString().replaceFirst('Exception: ', '');
       if (mounted) {
         showSnackBar(
           context,
-          "An error occurred while calculating exchange rates: ${e.toString()}",
+          "${TextConstants.errorCalculatingExchangeRate} $errorMessage",
           duration: const Duration(seconds: 2),
           color: Pallete.errorColor,
         );
